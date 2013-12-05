@@ -1,0 +1,19 @@
+{
+  "name": "M2SM",
+  "version": "0.0.0",
+  "description": "a simple to convert mysql table to sails model js file",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sails",
+    "mysql",
+    "model"
+  ],
+  "author": "supershell",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "sails-mysql": "~0.9.5"
+  }
+}
