@@ -1,7 +1,7 @@
 {
-  "name": "M2SM",
+  "name": "MS2SM",
   "version": "0.0.0",
-  "description": "a simple to convert mysql table to sails model js file",
+  "description": "a simple to convert mysql Schema to sails model js file",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

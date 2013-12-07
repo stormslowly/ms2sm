@@ -8,7 +8,7 @@ var sql = require("./sql.js")
 var mysql_config ={
   host: 'localhost',
   user: 'root',
-  password: 'Nokia123',
+  password: 'password',
   database: 'test',
   pool: true,
   connectionLimit: 10,
