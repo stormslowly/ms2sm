@@ -1,45 +1,29 @@
 "use strict";
 
 
+var sql = require("./sql.js");
 var mysql = require("mysql");
-var sql = require("./sql.js")
 
 
-var mysql_config ={
-  host: 'localhost',
-  user: 'root',
-  password: 'password',
-  database: 'test',
-  pool: true,
-  connectionLimit: 10,
-  waitForConnections: true
-};
 
 
-function marshalConfig(config) {
-  return {
-    host: config.host,
-    port: config.port || 3306,
-    socketPath: config.socketPath || null,
-    user: config.user,
-    password: config.password,
-    database: config.database
-  };
-}
 
-var tableName = 'bus_routes';
-var query = 'DESCRIBE ' + tableName;
+
+var tableName = 'bus_vehicles';
 var pkQuery = "SHOW INDEX FROM " + tableName + ";";
 
-function __DESCRIBE__(err, schema) {
+function __DESCRIBE__(err, schema, cb) {
     if (err) {
-      if (err.code === 'ER_NO_SUCH_TABLE') {
-        return cb();
-      } else return cb(err);
+      console.log(err);
+      connection.end();
+      return;
+      
     }
 
     connection.query(pkQuery, function(err, pkResult) {
-      if(err) return cb(err);
+      if(err){
+        return cb(err);
+      } 
 
       // Loop through Schema and attach extra attributes
       schema.forEach(function(attr) {
@@ -63,7 +47,9 @@ function __DESCRIBE__(err, schema) {
       // Loop Through Indexes and Add Properties
       pkResult.forEach(function(result) {
         schema.forEach(function(attr) {
-          if(attr.Field !== result.Column_name) return;
+          if( attr.Field !== result.Column_name){ 
+            return;
+          }
           attr.indexed = true;
         });
       });
@@ -82,12 +68,45 @@ function __DESCRIBE__(err, schema) {
 
   }
 
-var connection = mysql.createConnection(marshalConfig(mysql_config));
+
+var argvs = process.argv.slice(2);
+var argc = argvs.length;
+
+if (argc !== 1 ){
+  console.error("plz give me the table name");
+  process.exit();
+}
+
+var mysqlConfig = {
+  host: 'localhost',
+  user: 'root',
+  password: 'password',
+  database: 'test',
+  pool: true,
+  connectionLimit: 10,
+  waitForConnections: true
+};
+
+function marshalConfig(config) {
+  return {
+    host: config.host,
+    port: config.port || 3306,
+    socketPath: config.socketPath || null,
+    user: config.user,
+    password: config.password,
+    database: config.database
+  };
+}
+
+
+var connection = mysql.createConnection( marshalConfig( mysqlConfig ) );
 
 connection.connect(function(err) {
-  if(err) console.error("connect to mysql failed ",err);
-  console.log("connect");
+  
+  if(err) {
+    console.error("connect to mysql failed ",err);
+  }
    
-  connection.query("DESCRIBE bus_routes;",__DESCRIBE__);
+  connection.query("DESCRIBE " + argvs[0] + " ;",__DESCRIBE__);
 
 });
