@@ -69,7 +69,7 @@ describe("Convert MySQL Schema to Sails Model",function(){
   });
 
 
-  it("should omiited createdAt and updatedAt field", function(){
+  it("should omitted createdAt and updatedAt field", function(){
     var schema = [{ Field: 'createdAt',
                     Type: 'datetime',
                     Null: 'YES',
@@ -87,6 +87,25 @@ describe("Convert MySQL Schema to Sails Model",function(){
     
     expect(model.attributes).to.be.empty;
 
+  });
+
+
+  it("should find the primary key of schem",function(){
+    var schema = [ { Field: 'field1',
+                     Type: 'int(20) unsigned',
+                     Null: 'NO',
+                     Key: 'PRI',
+                     Default: null,
+                     Extra: '' },
+                   { Field: 'field2',
+                     Type: 'int(20) unsigned',
+                     Null: 'NO',
+                     Default: null,
+                     Extra: '' } ];
+    invoke(schema);
+    console.log(model);
+    expect(model.attributes.field1.primKey).to.be.ok;
+    expect(model.attributes.field2.primKey).to.be.not.ok;
   });
 
 });
