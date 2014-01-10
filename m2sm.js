@@ -47,7 +47,7 @@ var connection = mysql.createConnection( mysqlConfig );
 
 function __DESCRIBE__(err, schema) {
     if (err) {
-      console.log(err);
+      console.error(err);
       connection.end();
       return;
       
