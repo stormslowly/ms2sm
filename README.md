@@ -1,7 +1,6 @@
-# MS2MS
-### a simple tool to convert mysql Schema to sails model js file
-
-
+# M2MS
+### a simple tool to convert mysql Schema to sails model json file
+Just hate to write the model json by hand so write this
 ##Options 
 
 ```
@@ -17,7 +16,7 @@ $ node m2sm.js --help
     -p, --password [password]       Specify password defualt empty
 ```
 
-##example
+##Example
 
 ```
 mysql> desc bus_vehicles;
@@ -33,9 +32,9 @@ mysql> desc bus_vehicles;
 +----------------+------------------+------+-----+---------+-------+
 6 rows in set (0.04 sec)
 ```
-we will get the sails model json like this
+we will get the sails model json like below
 ```
-$ node m2sm --database db_name --table bus_vehicles -u supershelly -p secret
+$ node m2sm --database db_name --table bus_vehicles -u yourname -p secret
 ```
 then 
 ```
@@ -49,4 +48,7 @@ then
 ```
 
 
+##Bugs
+It just fit my requirement.
+If shit happens, leave me a issue or pull request your code 
 
