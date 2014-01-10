@@ -40,7 +40,7 @@ then
 ```
 { schema: true,
   attributes:
-   { Vehicle_ID: { type: 'integer' },
+   { Vehicle_ID: { type: 'integer', primaryKey: true },
      License_Number: { type: 'string' },
      Device_ID: { type: 'string' },
      Route_Name: { type: 'string' } },
