@@ -38,7 +38,7 @@ describe("Convert MySQL Schema to Sails Model",function(){
     invoke(schema);
 
     expect(model.attributes).to.include.keys(["field1","field2","field1"]);
-
+ 
   });
 
   it("should coenvert int to integer type", function(){
@@ -49,7 +49,6 @@ describe("Convert MySQL Schema to Sails Model",function(){
                     Default: null,
                     Extra: '' } ];
     var model = M2SM.convertSchema2SailsModel(schema);
-    console.log(model);
     expect(model.attributes.field1).to.include.key("type");
     expect(model.attributes.field1.type).to.equal("integer");
 

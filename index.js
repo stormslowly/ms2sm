@@ -1,9 +1,49 @@
 "use strict";
 
-
-var sql = require("./sql.js");
 var mysql = require("mysql");
+var m2smlib = require("./lib/mysql2SailsModel.js");
 
+var m2sm = require("commander");
+
+
+
+m2sm.version('0.0.1')
+  .option('-h, --host [host addr]', 'Specify mysql host,default is localhost')
+  .option('-d, --database [database name]', 'Specify database name')
+  .option('-t, --table [table]' , 'Specify table name')
+  .option('-u, --user [user name]', 'Specify user name defualt is root')
+  .option('-p, --password [password]', 'Specify password defualt empty')
+  .parse(process.argv);
+
+
+m2sm.host = m2sm.host || "localhost";
+m2sm.user = m2sm.user || "root";
+m2sm.password = m2sm.password || "";
+
+
+if( !m2sm.database ){
+  console.error("database name must be specifid");
+  process.exit();
+}
+if( !m2sm.table ) {   
+  console.log("table name must be specifid");
+  process.exit();
+}
+
+
+var mysqlConfig = {
+  host: m2sm.host,
+  user: m2sm.user,
+  password: m2sm.password,
+  database: m2sm.database,
+  pool: true,
+  connectionLimit: 10,
+  waitForConnections: true
+};
+
+
+
+var connection = mysql.createConnection( mysqlConfig );
 
 function __DESCRIBE__(err, schema) {
     if (err) {
@@ -13,91 +53,13 @@ function __DESCRIBE__(err, schema) {
       
     }
 
-    connection.query(pkQuery, function(err, pkResult) {
-      if(err){
-        return;
-      } 
+    var sailsModel = m2smlib.convertSchema2SailsModel(schema);
+    sailsModel.tableName = m2sm.table;
 
-      // Loop through Schema and attach extra attributes
-      schema.forEach(function(attr) {
-
-        // Set Primary Key Attribute
-        if(attr.Key === 'PRI') {
-          attr.primaryKey = true;
-
-          // If also an integer set auto increment attribute
-          if(attr.Type === 'int(11)') {
-            attr.autoIncrement = true;
-          }
-        }
-
-        // Set Unique Attribute
-        if(attr.Key === 'UNI') {
-          attr.unique = true;
-        }
-      });
-
-      // Loop Through Indexes and Add Properties
-      pkResult.forEach(function(result) {
-        schema.forEach(function(attr) {
-          if( attr.Field !== result.Column_name){ 
-            return;
-          }
-          attr.indexed = true;
-          console.log("====",attr);
-        }
-
-        );
-      });
-    });
-
-    // Convert mysql format to standard javascript object
-    var normalizedSchema = sql.normalizeSchema(schema);
-
-    // Set Internal Schema Mapping
-    // dbs[collectionName].schema = normalizedSchema;
-
-    // TODO: check that what was returned actually matches the cache
-    // cb(null, normalizedSchema);
-    console.log(normalizedSchema);
+    console.log(sailsModel);
     connection.end();
   }
 
-
-var argvs = process.argv.slice(2);
-var argc = argvs.length;
-
-if (argc !== 1 ){
-  console.error("plz give me the table name");
-  process.exit();
-}
-
-var pkQuery = "SHOW INDEX FROM " + argvs[0]  + ";";
-
-
-var mysqlConfig = {
-  host: 'localhost',
-  user: 'root',
-  password: 'password',
-  database: 'test',
-  pool: true,
-  connectionLimit: 10,
-  waitForConnections: true
-};
-
-function marshalConfig(config) {
-  return {
-    host: config.host,
-    port: config.port || 3306,
-    socketPath: config.socketPath || null,
-    user: config.user,
-    password: config.password,
-    database: config.database
-  };
-}
-
-
-var connection = mysql.createConnection( marshalConfig( mysqlConfig ) );
 
 connection.connect(function(err) {
   
@@ -105,6 +67,6 @@ connection.connect(function(err) {
     console.error("connect to mysql failed ",err);
   }
    
-  connection.query("DESCRIBE " + argvs[0] + " ;",__DESCRIBE__);
+  connection.query("DESCRIBE " + m2sm.table + " ;",__DESCRIBE__);
 
 });

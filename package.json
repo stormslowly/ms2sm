@@ -14,8 +14,8 @@
   "author": "supershell",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "sails-mysql": "~0.9.5",
     "mysql": "2.0.0-alpha8",
-    "chai": "~1.8.1"
+    "chai": "~1.8.1",
+    "commander": "~2.1.0"
   }
 }
