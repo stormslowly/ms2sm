@@ -4,7 +4,7 @@
   "description": "a simple tool to convert mysql Schema to sails model js file",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test"
   },
   "keywords": [
     "sails",
@@ -15,6 +15,7 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "sails-mysql": "~0.9.5",
-    "mysql": "2.0.0-alpha8"
+    "mysql": "2.0.0-alpha8",
+    "chai": "~1.8.1"
   }
 }

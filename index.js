@@ -4,25 +4,64 @@
 var sql = require("./sql.js");
 var mysql = require("mysql");
 
+
 function __DESCRIBE__(err, schema) {
-  if (err) {
-    console.log(err);
+    if (err) {
+      console.log(err);
+      connection.end();
+      return;
+      
+    }
+
+    connection.query(pkQuery, function(err, pkResult) {
+      if(err){
+        return;
+      } 
+
+      // Loop through Schema and attach extra attributes
+      schema.forEach(function(attr) {
+
+        // Set Primary Key Attribute
+        if(attr.Key === 'PRI') {
+          attr.primaryKey = true;
+
+          // If also an integer set auto increment attribute
+          if(attr.Type === 'int(11)') {
+            attr.autoIncrement = true;
+          }
+        }
+
+        // Set Unique Attribute
+        if(attr.Key === 'UNI') {
+          attr.unique = true;
+        }
+      });
+
+      // Loop Through Indexes and Add Properties
+      pkResult.forEach(function(result) {
+        schema.forEach(function(attr) {
+          if( attr.Field !== result.Column_name){ 
+            return;
+          }
+          attr.indexed = true;
+          console.log("====",attr);
+        }
+
+        );
+      });
+    });
+
+    // Convert mysql format to standard javascript object
+    var normalizedSchema = sql.normalizeSchema(schema);
+
+    // Set Internal Schema Mapping
+    // dbs[collectionName].schema = normalizedSchema;
+
+    // TODO: check that what was returned actually matches the cache
+    // cb(null, normalizedSchema);
+    console.log(normalizedSchema);
     connection.end();
-    return;
-    
   }
-
-  // Convert mysql format to standard javascript object
-  var normalizedSchema = sql.normalizeSchema(schema);
-
-  // Set Internal Schema Mapping
-  // dbs[collectionName].schema = normalizedSchema;
-
-  // TODO: check that what was returned actually matches the cache
-  // cb(null, normalizedSchema);
-  console.log(normalizedSchema);
-  connection.end();
-}
 
 
 var argvs = process.argv.slice(2);
@@ -32,6 +71,9 @@ if (argc !== 1 ){
   console.error("plz give me the table name");
   process.exit();
 }
+
+var pkQuery = "SHOW INDEX FROM " + argvs[0]  + ";";
+
 
 var mysqlConfig = {
   host: 'localhost',

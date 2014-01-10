@@ -82,5 +82,7 @@
     "white": false, // true: Check against strict whitespace and indentation rules
 
     // Custom Globals
-    "globals": {} // additional predefined global variables
+    "globals": {"describe":true,
+                "it": true,
+                "JSON": true} // additional predefined global variables
 }
