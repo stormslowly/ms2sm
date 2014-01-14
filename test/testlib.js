@@ -103,7 +103,6 @@ describe("Convert MySQL Schema to Sails Model",function(){
                      Default: null,
                      Extra: '' } ];
     invoke(schema);
-    console.log(model);
     expect(model.attributes.field1.primaryKey).to.be.ok;
     expect(model.attributes.field2.primaryKey).to.be.not.ok;
   });
