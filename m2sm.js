@@ -8,28 +8,23 @@ var m2sm = require("commander");
 
 
 m2sm.version('0.0.1')
-  .option('-h, --host [host addr]', 'Specify mysql host,default is localhost')
+  .option('-h, --host [host addr]', 'Specify mysql host,default is localhost',
+    'localhost')
   .option('-d, --database <database name>', 'Specify database name')
   .option('-t, --table <table>' , 'Specify table name')
-  .option('-u, --user [user name]', 'Specify user name defualt is root')
-  .option('-p, --password [password]', 'Specify password defualt empty')
+  .option('-u, --user [user name]', 'Specify user name defualt is root','roots')
+  .option('-p, --password [password]', 'Specify password defualt empty','')
   .parse(process.argv);
-
-
-m2sm.host = m2sm.host || "localhost";
-m2sm.user = m2sm.user || "root";
-m2sm.password = m2sm.password || "";
-
 
 if( !m2sm.database ){
   console.error("database name must be specifid");
   process.exit();
 }
+
 if( !m2sm.table ) {
   console.log("table name must be specifid");
   process.exit();
 }
-
 
 var mysqlConfig = {
   host: m2sm.host,
@@ -41,25 +36,22 @@ var mysqlConfig = {
   waitForConnections: true
 };
 
-
-
 var connection = mysql.createConnection( mysqlConfig );
 
 function __DESCRIBE__(err, schema) {
-    if (err) {
-      console.error(err);
-      connection.end();
-      return;
-
-    }
-
-    var sailsModel = m2smlib.convertSchema2SailsModel(schema);
-    sailsModel.tableName = m2sm.table;
-
-    console.log(sailsModel);
+  if (err) {
+    console.error(err);
     connection.end();
+    return;
+
   }
 
+  var sailsModel = m2smlib.convertSchema2SailsModel(schema);
+  sailsModel.tableName = m2sm.table;
+
+  console.log(sailsModel);
+  connection.end();
+}
 
 connection.connect(function(err) {
 
