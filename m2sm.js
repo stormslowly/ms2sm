@@ -9,8 +9,8 @@ var m2sm = require("commander");
 
 m2sm.version('0.0.1')
   .option('-h, --host [host addr]', 'Specify mysql host,default is localhost')
-  .option('-d, --database [database name]', 'Specify database name')
-  .option('-t, --table [table]' , 'Specify table name')
+  .option('-d, --database <database name>', 'Specify database name')
+  .option('-t, --table <table>' , 'Specify table name')
   .option('-u, --user [user name]', 'Specify user name defualt is root')
   .option('-p, --password [password]', 'Specify password defualt empty')
   .parse(process.argv);
@@ -25,7 +25,7 @@ if( !m2sm.database ){
   console.error("database name must be specifid");
   process.exit();
 }
-if( !m2sm.table ) {   
+if( !m2sm.table ) {
   console.log("table name must be specifid");
   process.exit();
 }
@@ -50,7 +50,7 @@ function __DESCRIBE__(err, schema) {
       console.error(err);
       connection.end();
       return;
-      
+
     }
 
     var sailsModel = m2smlib.convertSchema2SailsModel(schema);
@@ -62,11 +62,11 @@ function __DESCRIBE__(err, schema) {
 
 
 connection.connect(function(err) {
-  
+
   if(err) {
     console.error("connect to mysql failed ",err);
   }
-   
+
   connection.query("DESCRIBE " + m2sm.table + " ;",__DESCRIBE__);
 
 });
