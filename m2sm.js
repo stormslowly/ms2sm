@@ -12,7 +12,7 @@ m2sm.version('0.0.1')
     'localhost')
   .option('-d, --database <database name>', 'Specify database name')
   .option('-t, --table <table>' , 'Specify table name')
-  .option('-u, --user [user name]', 'Specify user name defualt is root','roots')
+  .option('-u, --user [user name]', 'Specify user name defualt is root','root')
   .option('-p, --password [password]', 'Specify password defualt empty','')
   .parse(process.argv);
 
