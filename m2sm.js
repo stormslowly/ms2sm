@@ -45,17 +45,18 @@ function writeModel(schema, table) {
 
   var sailsModel = m2smlib.convertSchema2SailsModel(schema);
 
-  sailsModel.tableName = inflection.camelize(table, true);
+  sailsModel.tableName = table;
+  var camelTableName = inflection.camelize(table, true);
 
-  var modelPrefix = "/**\n* "+sailsModel.tableName+".js\n*\n* @description :: TODO: Write a short summary of how this model works and what it represents here.\n* @docs        :: http://sailsjs.org/#!documentation/models\n*/\n\nmodule.exports = ";
+  var modelPrefix = "/**\n* "+camelTableName+".js\n*\n* @description :: TODO: Write a short summary of how this model works and what it represents here.\n* @docs        :: http://sailsjs.org/#!documentation/models\n*/\n\nmodule.exports = ";
 
-  fs.writeFile(sailsModel.tableName + '.js', //filename
+  fs.writeFile(camelTableName + '.js', //filename
     modelPrefix+JSON.stringify(sailsModel, undefined, 2), //text
     function (err) {
       if (err)
         throw err;
 
-      console.log(sailsModel.tableName + ' Model created.');
+      console.log(camelTableName + ' Model created.');
   });
 
   if(m2sm.table) {
